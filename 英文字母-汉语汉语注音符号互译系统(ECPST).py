@@ -8,7 +8,7 @@ import os # 系统
 
 # 外部模块
 import pyperclip # 剪贴板
-from 字符串处理程序通用模块 import *
+from 字符串处理程序通用模块 import * # 子模块
 
 # Core Module
 # 核心互译对照表
@@ -24,9 +24,8 @@ LANG_DICTORY={
     'ai':'ㄞ','ei':'ㄟ','ao':'ㄠ','ou':'ㄡ',
     'an':'ㄢ','en':'ㄣ','ang':'ㄤ','eng':'ㄥ',
     'er':'ㄦ',
-    'v':'ㄪ','ng':'ㄫ','gn':'ㄬ',
+    'v':'ㄪ','ng':'ㄫ','gn':'ㄬ', # 某些设备/窗口无法显示
     'w':'^ㄨ','y':'^ㄧ'}
-# LANG_REVERSED={k:v for v,k in LANG_DICTORY.items()} 字典推导式反转，程序中会动态生成
 
 CONFIG_FORMAT_EN='''Configuration code format descriptions:
 1. Each character is treated as a value
@@ -47,6 +46,7 @@ CONFIG_FORMAT_CN='''配置代码格式说明：
 
 # 主函数
 def ECPST(context:str,oldReplace:bool=False,disableComplex:bool=False) -> str:
+    '''输入内容及配置，自动将英文字母与汉语注音符号相互翻译'''
     currentDictory=LANG_DICTORY
     # 替换老国音符号（存在无法显示问题）
     if oldReplace:
@@ -54,7 +54,7 @@ def ECPST(context:str,oldReplace:bool=False,disableComplex:bool=False) -> str:
         LANG_DICTORY['ng']='兀'
         LANG_DICTORY['gn']='广'
     # 生成逆向字典并合成为最终字典
-    currentDictory.update({k:v for v,k in currentDictory.items()})
+    currentDictory.update({k:v for v,k in currentDictory.items()}) # 使用字典推导式反转字典
     return translateStrByDic(context=context,dictory=currentDictory,singleCharacter=disableComplex)
 
 # 针对单元的翻译
@@ -64,6 +64,7 @@ def translateUnit(unitStr:str,dict:dict) -> str:
 
 # 子函数：按照字典翻译
 def translateStrByDic(context:str,dictory:dict,singleCharacter:bool=False) -> str:
+    '''根据字典自动替换字符串内字符并返回新字符'''
     # 获取最长单元的长度
     maxUnitLength=max([len(i) for i in dictory.keys()])
     # 单字符逐字翻译
